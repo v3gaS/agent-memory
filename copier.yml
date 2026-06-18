@@ -1,5 +1,5 @@
 # Copier template metadata — https://copier.readthedocs.io/
-# Usage: copier copy https://github.com/YOUR_ORG/agent-memory /path/to/project
+# Usage: copier copy https://github.com/v3gaS/agent-memory /path/to/project
 
 _min_copier_version: "9.0.0"
 _subdirectory: "."

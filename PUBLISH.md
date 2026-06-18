@@ -28,7 +28,7 @@ make export DEST=../agent-memory
 Edit **`config/install.defaults.env`** in the exported repo:
 
 ```env
-AGENT_MEMORY_INSTALL_REPO=https://github.com/YOUR_ORG/agent-memory.git
+AGENT_MEMORY_INSTALL_REPO=https://github.com/v3gaS/agent-memory.git
 AGENT_MEMORY_INSTALL_REF=main
 ```
 

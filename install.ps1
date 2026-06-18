@@ -7,7 +7,7 @@
   .\install.ps1 -Target C:\dev\my-app
 
 .EXAMPLE
-  irm https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.ps1 | iex; Install-AgentMemory -Target .
+  irm https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.ps1 | iex; Install-AgentMemory -Target .
 #>
 param(
     [Parameter(Mandatory = $true)]
@@ -39,7 +39,7 @@ if (-not $Repo) {
             if ($_ -match '^AGENT_MEMORY_INSTALL_REPO=(.+)$') { $Repo = $Matches[1].Trim() }
         }
     }
-    if (-not $Repo) { $Repo = "https://github.com/YOUR_ORG/agent-memory.git" }
+    if (-not $Repo) { $Repo = "https://github.com/v3gaS/agent-memory.git" }
 }
 
 function Write-Log($msg) { Write-Host "agent-memory: $msg" }

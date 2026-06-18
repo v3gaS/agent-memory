@@ -43,7 +43,7 @@ Usage:
   agent-memory version
 
 Install script:
-  curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.sh | bash -s -- --target .
+  curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
 
 Docs: BOOTSTRAP.md, GROWTH.md, PUBLISH.md
 EOF

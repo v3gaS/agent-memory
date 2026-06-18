@@ -4,8 +4,8 @@
 # Local (from cloned template repo):
 #   ./install.sh --target /path/to/project
 #
-# Remote one-liner (after publishing standalone repo — set YOUR_ORG):
-#   curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.sh | bash -s -- --target .
+# Remote one-liner (after publishing standalone repo — set v3gaS):
+#   curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
 #
 # Non-interactive:
 #   ./install.sh --target . --yes --project-name "My App" --stack "Next.js" \

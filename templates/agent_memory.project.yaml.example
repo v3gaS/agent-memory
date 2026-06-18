@@ -1,0 +1,10 @@
+# Copy to agent_memory.project.yaml and customize, then:
+#   python3 /path/to/scaffold/agent-memory/apply.py --target . --config agent_memory.project.yaml --no-prompt
+
+project_name: "My Project"
+stack_summary: "e.g. Python 3.12 + FastAPI + Postgres, or Next.js 15 + tRPC"
+primary_config: "config/settings.yaml"
+src_root: "src/"
+default_test_command: "pytest -q"
+maturity_level: "L1"
+date: "{{DATE}}"

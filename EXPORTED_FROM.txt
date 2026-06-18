@@ -1,0 +1,10 @@
+Exported: 2026-06-18T11:54:21Z
+Source: /Volumes/InternalSATA/__Scripts/__Stock_Scanner_API/scaffold/agent-memory
+Version: 0.1.0
+
+Next steps:
+  1. Edit config/install.defaults.env — set v3gaS/agent-memory.git
+  2. git init && git add . && git commit -m "Initial agent-memory template v0.1.0"
+  3. Create GitHub repo and push
+  4. Settings → check "Template repository"
+  5. Update README curl one-liners with real org/repo

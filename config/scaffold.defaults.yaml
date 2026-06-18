@@ -1,0 +1,10 @@
+# Default values for apply.py when keys are missing from agent_memory.project.yaml
+project_name: "My Project"
+stack_summary: "Describe your stack here (language, framework, datastore, deploy target)"
+primary_config: "config/settings.yaml"
+src_root: "src/"
+default_test_command: "pytest -q"
+date: ""  # empty = today UTC date at apply time
+maturity_level: "L1"
+skip_existing: true
+force: false

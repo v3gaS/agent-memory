@@ -1,0 +1,21 @@
+# Python tooling cache (install.sh may pip install --user)
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Copier / local export scratch
+.copier-answers.yml
+dist/
+export/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Ephemeral clone dir marker (install.sh uses mktemp outside repo)
+*.log

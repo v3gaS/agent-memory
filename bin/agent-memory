@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Thin CLI wrapper — dispatches to install.sh, apply.py, or register_subsystem.py.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PATH="$ROOT:$PATH"
+
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+  install)
+    exec "$ROOT/install.sh" "$@"
+    ;;
+  apply)
+    exec python3 "$ROOT/apply.py" "$@"
+    ;;
+  register|register-subsystem)
+    if [[ -f "./scripts/register_subsystem.py" ]]; then
+      exec python3 "./scripts/register_subsystem.py" "$@"
+    fi
+    exec python3 "$ROOT/register_subsystem.py" "$@"
+    ;;
+  verify)
+    target="${1:-.}"
+    shift || true
+    cd "$target"
+    python3 scripts/docs_integrity.py
+    python3 -m pytest tests/test_docs_integrity.py -q "$@"
+    ;;
+  version)
+    cat "$ROOT/VERSION"
+    ;;
+  help|-h|--help)
+    cat <<EOF
+agent-memory — documentation + agent rules scaffold
+
+Usage:
+  agent-memory install --target PATH [install.sh options]
+  agent-memory apply --target PATH [apply.py options]
+  agent-memory register --slug NAME --title TITLE --paths GLOB [--test CMD]
+  agent-memory verify [TARGET_DIR]
+  agent-memory version
+
+Install script:
+  curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
+
+Docs: BOOTSTRAP.md, GROWTH.md, PUBLISH.md
+EOF
+    ;;
+  *)
+    echo "unknown command: $cmd (try: agent-memory help)" >&2
+    exit 1
+    ;;
+esac

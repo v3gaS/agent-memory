@@ -1,0 +1,53 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    paths:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tooling deps
+        run: pip install pyyaml pytest
+
+      - name: chmod install scripts
+        run: |
+          chmod +x install.sh apply.py register_subsystem.py bin/agent-memory
+          chmod +x scripts/export-standalone.sh 2>/dev/null || true
+
+      - name: Smoke install (python preset)
+        run: |
+          ./install.sh --local --target /tmp/am-target --yes \
+            --preset python \
+            --project-name "CI Smoke" \
+            --stack "pytest CI fixture"
+
+      - name: Register subsystem smoke
+        run: |
+          python3 /tmp/am-target/scripts/register_subsystem.py \
+            --slug api \
+            --title "API" \
+            --paths "src/api/**" \
+            --test "pytest tests/test_api.py -q"
+          python3 /tmp/am-target/scripts/docs_integrity.py
+
+      - name: Template repo unit tests (when vendored in monorepo)
+        run: |
+          if [ -f tests/test_template_repo.py ]; then
+            python3 -m pytest tests/test_template_repo.py -q
+          else
+            echo "No tests/test_template_repo.py — skipping"
+          fi
+        working-directory: ${{ github.workspace }}
+        continue-on-error: true

@@ -1,0 +1,83 @@
+# {{PROJECT_NAME}} — Cursor agent rules
+
+You are working on an **existing** codebase ({{STACK_SUMMARY}}), not a greenfield MVP.
+
+Authoritative context:
+
+- **Always-on index:** [AGENTS.md](AGENTS.md) — doc discipline, ownership map, invariants, test rules.
+- **Deep refs + task router:** [docs/README.md](docs/README.md) — which doc to read and which tests to run.
+- **New modules / boundaries:** [docs/MODULE_ONBOARDING.md](docs/MODULE_ONBOARDING.md).
+- **New subsystems:** [docs/SUBSYSTEM_TEMPLATE.md](docs/SUBSYSTEM_TEMPLATE.md) or `python3 scripts/register_subsystem.py` + AGENTS.md rows.
+- **Maturity / growth:** [agent_memory.state.yaml](agent_memory.state.yaml) — promote tiers per scaffold GROWTH guide when present.
+
+**Conflict order:** code + `{{PRIMARY_CONFIG}}` → `docs/*.md` deep refs → `AGENTS.md` (index only).
+
+**When in doubt, also read:**
+
+- [docs/OPERATIONS.md](docs/OPERATIONS.md) — symptom → runbook.
+- [docs/BACKLOG.md](docs/BACKLOG.md) / [docs/FINDINGS.md](docs/FINDINGS.md) — roadmap and live triage.
+
+## Stack (do not substitute)
+
+- {{STACK_SUMMARY}}
+- Source root: `{{SRC_ROOT}}`
+- Primary config: `{{PRIMARY_CONFIG}}`
+
+Adjust this block only via explicit project decision documented in BACKLOG.
+
+## Test discipline (never violate)
+
+**When finding test failures, never weaken the test to gain a pass.** Always address the underlying issue.
+
+Forbidden shortcuts:
+
+- Deleting or commenting out assertions to green CI.
+- Widening timeouts/tolerances without a documented reason in FINDINGS or the subsystem deep ref.
+- `@pytest.mark.skip` / `@ignore` / `it.skip` to hide failures without a tracked `F-###` and owner approval.
+
+Allowed:
+
+- Fix production code when behavior was wrong.
+- Fix the test when the **specified intent** was wrong — document the intent change in the deep ref changelog.
+- Add missing tests when behavior is new or regression-prone.
+
+Always run:
+
+1. Task-router **Tests** column for touched subsystems ([docs/README.md](docs/README.md)).
+2. `python3 scripts/docs_integrity.py` after markdown edits.
+3. `python3 -m pytest tests/test_docs_integrity.py -q`
+4. `{{DEFAULT_TEST_COMMAND}}` (or the subsystem-specific command from the task router).
+
+Show commands you ran and real output; never claim green without running checks.
+
+## Every behaviour change — ship checklist
+
+1. **Code** — minimal correct diff; match existing patterns in touched files.
+2. **Docs** — update the subsystem deep ref from [AGENTS.md ownership map](AGENTS.md#ownership-map--which-doc-to-update) in the **same commit** (API/schema rows, invariants, changelog). Touch AGENTS.md only for new subsystems, doc-map changes, or cross-cutting NEVER lines.
+3. **Proposals** — if the work followed a plan with non-empty **Out of scope** or **Possible follow-ups**, append to the matching file under [docs/proposals/](docs/proposals/) in the **same commit**. Do not leave deferred items only in `.cursor/plans/`.
+4. **Tests** — run relevant tests; add or extend tests when behaviour is non-trivial or regression-prone.
+5. **Doc integrity** — `python3 scripts/docs_integrity.py` and `pytest tests/test_docs_integrity.py -q`.
+6. **Verify** — attach command output in PR or agent summary.
+
+## Planning
+
+Whenever a **PLAN** is requested, include **stage-by-stage due diligence**: full process, edge cases for the coding agent, tests to run, doc touch list, and follow-on features worth building alongside the change.
+
+**Plan follow-ups (required when non-empty):** append **Out of scope** / **Possible follow-ups** to [docs/proposals/](docs/proposals/) per [README](docs/proposals/README.md) — same commit as implementation or when finalizing a deferred plan.
+
+## Parallel work
+
+Use parallel subtasks when work is independent (docs + tests while long suite runs). Do not parallelize steps that depend on architecture clarity or the same files.
+
+## Response style
+
+- Match task size: small fixes → short answer + what you ran; large features → brief plan then implementation.
+- Use code citations and links to `docs/` paths.
+- Prefer [docs/OPERATIONS.md](docs/OPERATIONS.md) for cross-cutting symptoms.
+
+## Safety (never violate)
+
+Add project-specific NEVER lines here and in AGENTS.md subsystem pointers as they emerge.
+
+- Same-commit documentation for behavior changes.
+- No substituting stack components without BACKLOG decision.

@@ -1,0 +1,4 @@
+# Optional dependencies for scaffold/agent-memory tooling only.
+# Target projects need pytest for tests/test_docs_integrity.py.
+pyyaml>=6.0
+pytest>=7.0

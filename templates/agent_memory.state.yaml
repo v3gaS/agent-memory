@@ -1,0 +1,41 @@
+# Agent memory — machine-readable project profile
+# Updated by apply.py and register_subsystem.py; edit by hand when stack or maturity changes.
+# See scaffold/agent-memory/GROWTH.md for level definitions.
+
+maturity_level: "{{MATURITY_LEVEL}}"
+project_name: "{{PROJECT_NAME}}"
+stack: "{{STACK_SUMMARY}}"
+primary_config: "{{PRIMARY_CONFIG}}"
+src_roots:
+  - "{{SRC_ROOT}}"
+default_test_command: "{{DEFAULT_TEST_COMMAND}}"
+last_bootstrapped: "{{DATE}}"
+
+subsystems:
+  - slug: core
+    title: Core
+    doc: docs/CORE.md
+    paths:
+      - "{{SRC_ROOT}}**"
+    test: "{{DEFAULT_TEST_COMMAND}}"
+
+integrity:
+  required_docs:
+    - AGENTS.md
+    - docs/README.md
+    - docs/SUBSYSTEM_TEMPLATE.md
+    - docs/BACKLOG.md
+    - docs/FINDINGS.md
+    - docs/CORE.md
+  optional_docs:
+    - docs/API_CATALOG.md
+    - docs/GROWTH.md
+
+proposals:
+  enabled: true
+  index: docs/proposals/README.md
+
+test_discipline:
+  never_weaken_tests: true
+  doc_regression: "python3 -m pytest tests/test_docs_integrity.py -q"
+  integrity_script: "python3 scripts/docs_integrity.py"

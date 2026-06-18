@@ -1,0 +1,56 @@
+# Copier template metadata — https://copier.readthedocs.io/
+# Usage: copier copy https://github.com/v3gaS/agent-memory /path/to/project
+
+_min_copier_version: "9.0.0"
+_subdirectory: "."
+_templates_suffix: ""
+_excludes:
+  - export
+  - __pycache__
+  - .pytest_cache
+  - .git
+
+project_name:
+  type: str
+  help: Project display name
+  default: "{{ _copier_conf.dst_path.name }}"
+
+stack_summary:
+  type: str
+  help: One-line stack description
+  default: "Application"
+
+primary_config:
+  type: str
+  help: Primary config file path
+  default: "config/settings.yaml"
+
+src_root:
+  type: str
+  help: Source code root
+  default: "src/"
+
+default_test_command:
+  type: str
+  help: Default test command for task router
+  default: "pytest -q"
+
+maturity_level:
+  type: str
+  default: "L1"
+
+_message_after_copy: |
+  Agent-memory template copied. Run install to bootstrap your app repo:
+
+    ./install.sh --local --target YOUR_APP_REPO --yes \
+      --project-name "{{ project_name }}" \
+      --stack "{{ stack_summary }}" \
+      --primary-config "{{ primary_config }}" \
+      --src-root "{{ src_root }}" \
+      --test-command "{{ default_test_command }}"
+
+  Or from inside your app directory:
+    /path/to/this/copy/install.sh --local --target .
+
+_tasks:
+  - "chmod +x install.sh bin/agent-memory apply.py register_subsystem.py scripts/export-standalone.sh 2>/dev/null || true"

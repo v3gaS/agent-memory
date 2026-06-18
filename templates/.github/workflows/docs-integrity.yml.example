@@ -1,0 +1,30 @@
+# Example CI workflow — copy to .github/workflows/docs-integrity.yml at L2+
+
+name: docs-integrity
+
+on:
+  pull_request:
+    paths:
+      - "**.md"
+      - "AGENTS.md"
+      - ".cursorrules"
+      - "scripts/docs_integrity.py"
+      - "tests/test_docs_integrity.py"
+      - "agent_memory.state.yaml"
+  push:
+    branches: [main, master]
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PyYAML (integrity optional dependency)
+        run: pip install pyyaml pytest
+      - name: Docs integrity script
+        run: python3 scripts/docs_integrity.py
+      - name: Docs integrity tests
+        run: python3 -m pytest tests/test_docs_integrity.py -q

@@ -17,8 +17,8 @@ Use this guide when adding the scaffold to a **new repo** or **existing codebase
 From the **target project root** (or any path):
 
 ```bash
-# Remote (after publishing standalone repo — replace v3gaS)
-curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
+# Remote (after publishing standalone repo — replace YOUR_ORG)
+curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.sh | bash -s -- --target .
 
 # Local (from cloned template repo)
 /path/to/agent-memory/install.sh --local --target .

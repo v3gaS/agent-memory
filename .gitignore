@@ -19,3 +19,4 @@ export/
 
 # Ephemeral clone dir marker (install.sh uses mktemp outside repo)
 *.log
+EXPORTED_FROM.txt

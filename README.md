@@ -1,103 +1,136 @@
 # agent-memory
 
-[![Template](https://img.shields.io/badge/GitHub-template-blue)](https://github.com/v3gaS/agent-memory/generate)
+[![GitHub template](https://img.shields.io/badge/GitHub-template-blue)](https://github.com/v3gaS/agent-memory/generate)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Install](https://img.shields.io/badge/install-curl%20%7C%20bash-green)](https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh)
 
-**Agent memory** — a portable documentation + Cursor/agent-rules system for any codebase.
-Gives humans and coding agents durable context: thin index (`AGENTS.md`), subsystem deep refs,
-work portfolio, test discipline, and integrity CI.
+**Give any codebase a durable memory for humans and AI agents.**
 
-Works with **any stack** (Python, Node, Go, Rust, mobile, monorepo). Starts at maturity **L1**;
-grow to **L4** as subsystems and ops burden increase ([GROWTH.md](GROWTH.md)).
+Agent-memory bootstraps a proven documentation + rules system into your project: a thin always-on index (`AGENTS.md`), subsystem deep refs, a task router (“read X, run test Y”), work portfolio (`BACKLOG` / `FINDINGS`), deferred plan capture (`proposals/`), and CI-friendly doc integrity checks.
 
-> Replace `v3gaS` in URLs below when you publish this repository.
+Works with **any stack** — Python, Node, Go, Rust, mobile, monorepo. Start at maturity **L1**; grow organically to **L4** as the project gains subsystems and operational load ([GROWTH.md](GROWTH.md)).
 
 ---
 
-## Install (fastest)
+## Why this exists
 
-### curl one-liner (no clone)
+Coding agents (Cursor, Claude, Copilot, …) start every session with zero context. So do new contributors. Without structure you get:
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target /path/to/your-project
+- Repeated architecture questions
+- Doc drift after merges
+- Lost “we’ll do that later” items from plans
+- Agents that guess instead of reading authoritative refs
+
+Agent-memory fixes that with **fixed roles for fixed files** and a **conflict order** agents must follow:
+
+```text
+code + primary config  →  docs/* deep refs  →  AGENTS.md (index only)
 ```
 
-Interactive prompts ask for project name, stack, config path, and test command.
+Behavior changes ship **doc deltas in the same commit**. Tests are **intent** — never weaken assertions to green CI.
 
-### Non-interactive with preset
+---
+
+## Install in one command
+
+From the **root of the project you want to bootstrap**:
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
+```
+
+Interactive prompts ask for project name, stack, config path, and default test command.  
+The installer clones this repo temporarily, copies the scaffold, and verifies doc integrity.
+
+### Non-interactive (presets)
+
+```bash
+# Python
 curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- \
-  --target . \
-  --yes \
-  --preset node \
-  --project-name "My App"
+  --target . --yes --preset python --project-name "My App"
+
+# Node / TypeScript
+curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- \
+  --target . --yes --preset node --project-name "My App"
+
+# Go
+curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- \
+  --target . --yes --preset go --project-name "My App"
+
+# Rust
+curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- \
+  --target . --yes --preset rust --project-name "My App"
 ```
 
-Presets: `python` | `node` | `go` | `rust` (set config path, src root, default test command).
+### Other install paths
 
-### Clone + local install
+| Method | Command |
+| --- | --- |
+| **Clone + local** | `git clone https://github.com/v3gaS/agent-memory.git && ./agent-memory/install.sh --local --target /path/to/app` |
+| **PowerShell** | `git clone …; .\install.ps1 -Target C:\dev\my-app -Yes -Preset python` |
+| **Make** | `make install TARGET=../my-app` |
+| **CLI** | `./bin/agent-memory install --target ../my-app` |
 
-```bash
-git clone https://github.com/v3gaS/agent-memory.git
-./agent-memory/install.sh --local --target /path/to/your-project
-```
-
-### PowerShell
-
-```powershell
-git clone https://github.com/v3gaS/agent-memory.git
-cd agent-memory
-.\install.ps1 -Target C:\dev\my-app -Yes -Preset python -ProjectName "My App"
-```
-
-### Make
-
-```bash
-git clone https://github.com/v3gaS/agent-memory.git
-cd agent-memory
-make install TARGET=../my-app
-```
+Full guide: [BOOTSTRAP.md](BOOTSTRAP.md)
 
 ---
 
-## Verify
+## What lands in your project
 
-After install, in **your project** (not this template repo):
+| Artifact | Purpose |
+| --- | --- |
+| [`AGENTS.md`](templates/AGENTS.md) | Thin index — ownership map, NEVER lines, doc map |
+| [`.cursorrules`](templates/.cursorrules) | Cursor ship checklist, conflict order, test discipline |
+| [`docs/README.md`](templates/docs/README.md) | Five-tier navigator + **task router** (read X → run test Y) |
+| [`docs/CORE.md`](templates/docs/CORE.md) | First subsystem deep ref (you complete it) |
+| [`docs/BACKLOG.md`](templates/docs/BACKLOG.md) | Unified work portfolio (`BL-###`) |
+| [`docs/FINDINGS.md`](templates/docs/FINDINGS.md) | Live engineering triage (`F-###`) |
+| [`docs/proposals/`](templates/docs/proposals/) | Deferred plan follow-ups (not lost in `.cursor/plans/`) |
+| [`agent_memory.state.yaml`](templates/agent_memory.state.yaml) | Machine-readable maturity + subsystem registry |
+| [`scripts/docs_integrity.py`](templates/scripts/docs_integrity.py) | Link + contract checks |
+| [`tests/test_docs_integrity.py`](templates/tests/test_docs_integrity.py) | Doc system regression tests |
+
+After install:
 
 ```bash
 python3 scripts/docs_integrity.py
 python3 -m pytest tests/test_docs_integrity.py -q
-# your stack tests:
-pytest -q          # or npm test, go test ./..., cargo test
+git add AGENTS.md .cursorrules docs/ agent_memory.* scripts/ tests/
+git commit -m "chore: bootstrap agent memory doc system"
 ```
 
-**Test discipline:** never weaken assertions to green CI — embedded in `AGENTS.md` and `.cursorrules`.
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+  subgraph agents [Agent / contributor session]
+    CR[.cursorrules]
+    AG[AGENTS.md index]
+    DR[docs/README task router]
+  end
+  subgraph truth [Authority]
+    CODE[Code + config]
+    DEEP[docs/* deep refs]
+  end
+  subgraph memory [Work memory]
+    BL[BACKLOG]
+    F[FINDINGS]
+    P[proposals/]
+  end
+  CR --> AG --> DR --> DEEP --> CODE
+  BL --> F
+  P --> DEEP
+```
 
 ---
 
-## What gets installed into your project
+## Grow over time
 
-| File | Role |
-| --- | --- |
-| `AGENTS.md` | Always-on index — ownership map, NEVER lines |
-| `.cursorrules` | Agent ship checklist + conflict order |
-| `docs/README.md` | Task router — read X, run test Y |
-| `docs/CORE.md` | First subsystem deep ref |
-| `docs/BACKLOG.md` / `FINDINGS.md` | Work portfolio + triage |
-| `docs/proposals/` | Deferred plan follow-ups |
-| `agent_memory.state.yaml` | Machine-readable maturity + subsystems |
-| `scripts/docs_integrity.py` | Link + contract checks |
-| `tests/test_docs_integrity.py` | Doc system regression tests |
-
-Full layout: [BOOTSTRAP.md](BOOTSTRAP.md).
-
----
-
-## Grow the system
+Add a bounded area (auth, billing, API, worker, …):
 
 ```bash
-# Add a subsystem (from your project root)
 python3 scripts/register_subsystem.py \
   --slug auth \
   --title "Authentication" \
@@ -106,58 +139,61 @@ python3 scripts/register_subsystem.py \
   --never "Never store passwords in plaintext"
 ```
 
-Bump `maturity_level` in `agent_memory.state.yaml` when promoting tiers ([GROWTH.md](GROWTH.md)).
+Then complete `docs/AUTH.md` using [SUBSYSTEM_TEMPLATE.md](templates/docs/SUBSYSTEM_TEMPLATE.md).
 
-CLI wrapper (from cloned template repo):
+| Level | When | Adds |
+| --- | --- | --- |
+| **L1** | First meaningful code | AGENTS + one deep ref |
+| **L2** | Regular agent/team use | BACKLOG, FINDINGS, proposals, integrity CI |
+| **L3** | 3+ subsystems | CONFIG, DATA_MODEL, OPERATIONS runbook |
+| **L4** | Production + audits | API catalog, help/, domain `.mdc` rules, archives |
 
-```bash
-./bin/agent-memory install --target ../my-app
-./bin/agent-memory verify ../my-app
-```
-
----
-
-## Publish / maintain this template
-
-Maintainers exporting from the Stock Scanner monorepo: [PUBLISH.md](PUBLISH.md).
-
-```bash
-./scripts/export-standalone.sh ../agent-memory
-cd ../agent-memory && git init && gh repo create v3gaS/agent-memory --public --source=. --push
-# GitHub → Settings → Template repository ✓
-```
+Details: [GROWTH.md](GROWTH.md)
 
 ---
 
 ## Design principles
 
-1. **Conflict order:** `code + config` → `docs/*` deep refs → `AGENTS.md` (index only)
-2. **Same-commit docs:** behavior changes ship doc deltas together
+1. **Conflict order:** `code + config` → deep refs → `AGENTS.md` (index only)
+2. **Same-commit docs:** behavior + doc changelog together
 3. **Thin index:** AGENTS.md links; never mirrors deep refs
-4. **Tests are intent:** fix code or fix test design — never weaken to pass
-5. **Organic growth:** L1 → L4 per [GROWTH.md](GROWTH.md)
+4. **Tests are intent:** fix code or fix test *design* — never weaken to pass
+5. **Organic growth:** promote tiers when pain appears, not on day one
 
 ---
 
-## Repository layout (this template repo)
+## This repository vs your app
 
+| Repo | Role |
+| --- | --- |
+| **v3gaS/agent-memory** (this repo) | Installer + templates — the cookie cutter |
+| **Your application repo** | Receives `AGENTS.md`, `docs/`, etc. via `install.sh` |
+
+You do not develop your app inside this template repo. You **install from it** into each project.
+
+---
+
+## Template repo layout
+
+```text
+agent-memory/
+├── install.sh / install.ps1    # Primary installers (curl-safe)
+├── apply.py                    # Template copy + placeholder substitution
+├── register_subsystem.py       # Add subsystem doc + AGENTS rows
+├── bin/agent-memory            # CLI wrapper
+├── templates/                  # Files copied into target projects
+├── BOOTSTRAP.md / GROWTH.md    # Apply + maturity guides
+├── copier.yml                  # Optional Copier flow
+└── tests/test_template_repo.py # Self-test
 ```
-agent-memory/                 ← standalone template repo root
-├── install.sh / install.ps1  ← primary installers
-├── apply.py                  ← template copy engine
-├── register_subsystem.py
-├── bin/agent-memory          ← CLI wrapper
-├── templates/                ← files copied into target projects
-├── BOOTSTRAP.md / GROWTH.md / PUBLISH.md
-├── copier.yml                ← optional Copier flow
-└── tests/test_template_repo.py
-```
+
+Use **GitHub → Use this template** to fork the installer itself. Use **`install.sh --target`** to bootstrap a separate application repo.
 
 ---
 
 ## Origin
 
-Extracted from the [Stock Scanner API](https://github.com/) agent/documentation system and generalized for any project.
+Generalized from the production agent/documentation system in [Stock Scanner API](https://github.com/v3gaS) — battle-tested with five-tier docs, proposals discipline, ownership maps, and docs-integrity CI.
 
 ## License
 

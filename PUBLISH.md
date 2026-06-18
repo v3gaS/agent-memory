@@ -28,20 +28,20 @@ make export DEST=../agent-memory
 Edit **`config/install.defaults.env`** in the exported repo:
 
 ```env
-AGENT_MEMORY_INSTALL_REPO=https://github.com/v3gaS/agent-memory.git
+AGENT_MEMORY_INSTALL_REPO=https://github.com/YOUR_ORG/agent-memory.git
 AGENT_MEMORY_INSTALL_REF=main
 ```
 
-Replace `v3gaS` everywhere:
+Replace `YOUR_ORG` everywhere:
 
 - `config/install.defaults.env`
 - `README.md` curl examples
 - `install.ps1` default repo (via env file)
-- Search: `v3gaS` in the exported tree
+- Search: `YOUR_ORG` in the exported tree
 
 ```bash
 cd ../agent-memory
-grep -r v3gaS . --exclude-dir=.git
+grep -r YOUR_ORG . --exclude-dir=.git
 ```
 
 ---
@@ -53,21 +53,21 @@ cd ../agent-memory
 git init
 git add .
 git commit -m "Initial agent-memory template v$(cat VERSION)"
-gh repo create v3gaS/agent-memory --public --source=. --push
+gh repo create YOUR_ORG/agent-memory --public --source=. --push
 ```
 
 Or create the repo in GitHub UI, then:
 
 ```bash
-git remote add origin git@github.com:v3gaS/agent-memory.git
+git remote add origin git@github.com:YOUR_ORG/agent-memory.git
 git push -u origin main
 ```
 
-Or use the automated helper (requires `gh` CLI, replaces `v3gaS` in exported tree):
+Or use the automated helper (requires `gh` CLI, replaces `YOUR_ORG` in exported tree):
 
 ```bash
 chmod +x scripts/publish-github.sh
-./scripts/publish-github.sh v3gaS/agent-memory ../agent-memory
+./scripts/publish-github.sh YOUR_ORG/agent-memory ../agent-memory
 ```
 
 ---
@@ -79,7 +79,7 @@ GitHub → **Settings** → **General** → check **Template repository**.
 Users can then:
 
 ```bash
-gh repo create my-app --template v3gaS/agent-memory --private
+gh repo create my-app --template YOUR_ORG/agent-memory --private
 # Then in my-app: ./install.sh --local --target .  (if template files are the installer only)
 ```
 
@@ -139,9 +139,9 @@ Keep Stock Scanner's `tests/test_agent_memory_scaffold.py` green after scaffold 
 
 | Method | Command |
 | --- | --- |
-| **curl (remote)** | `curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh \| bash -s -- --target .` |
+| **curl (remote)** | `curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.sh \| bash -s -- --target .` |
 | **clone + local** | `git clone .../agent-memory.git && cd agent-memory && ./install.sh --local --target /path/to/app` |
-| **degit** | `npx degit v3gaS/agent-memory /tmp/am && /tmp/am/install.sh --local --target .` |
+| **degit** | `npx degit YOUR_ORG/agent-memory /tmp/am && /tmp/am/install.sh --local --target .` |
 | **make** | `make install TARGET=../my-app` |
 | **PowerShell** | `.\install.ps1 -Target C:\dev\my-app -Yes -Preset node -ProjectName MyApp` |
 | **apply only** | `python3 apply.py --target /path/to/app` |
@@ -154,7 +154,7 @@ For teams using [Copier](https://copier.readthedocs.io/):
 
 ```bash
 pip install copier
-copier copy https://github.com/v3gaS/agent-memory /path/to/new-project
+copier copy https://github.com/YOUR_ORG/agent-memory /path/to/new-project
 cd /path/to/new-project
 ./install.sh --local --target .
 ```

@@ -4,8 +4,8 @@
 # Prerequisites: gh auth login, exported folder (see export-standalone.sh)
 #
 # Usage:
-#   ./scripts/publish-github.sh v3gaS/agent-memory ../agent-memory
-#   ./scripts/publish-github.sh v3gaS/agent-memory   # exports to ../agent-memory first
+#   ./scripts/publish-github.sh YOUR_ORG/agent-memory ../agent-memory
+#   ./scripts/publish-github.sh YOUR_ORG/agent-memory   # exports to ../agent-memory first
 
 set -euo pipefail
 
@@ -23,14 +23,14 @@ fi
 ORG="${REPO%%/*}"
 NAME="${REPO##*/}"
 
-echo "Replacing v3gaS with $ORG in exported tree ..."
+echo "Replacing YOUR_ORG with $ORG in exported tree ..."
 if command -v rg >/dev/null 2>&1; then
-  rg -l 'v3gaS' "$EXPORT_DIR" | while read -r f; do
-    sed -i.bak "s/v3gaS/$ORG/g" "$f" && rm -f "$f.bak"
+  rg -l 'YOUR_ORG' "$EXPORT_DIR" | while read -r f; do
+    sed -i.bak "s/YOUR_ORG/$ORG/g" "$f" && rm -f "$f.bak"
   done
 else
-  grep -rl 'v3gaS' "$EXPORT_DIR" | while read -r f; do
-    sed -i.bak "s/v3gaS/$ORG/g" "$f" && rm -f "$f.bak"
+  grep -rl 'YOUR_ORG' "$EXPORT_DIR" | while read -r f; do
+    sed -i.bak "s/YOUR_ORG/$ORG/g" "$f" && rm -f "$f.bak"
   done
 fi
 

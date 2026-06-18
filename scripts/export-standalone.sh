@@ -45,7 +45,7 @@ Source: $SOURCE
 Version: $VERSION
 
 Next steps:
-  1. Edit config/install.defaults.env — set v3gaS/agent-memory.git
+  1. Edit config/install.defaults.env — set YOUR_ORG/agent-memory.git
   2. git init && git add . && git commit -m "Initial agent-memory template v$VERSION"
   3. Create GitHub repo and push
   4. Settings → check "Template repository"

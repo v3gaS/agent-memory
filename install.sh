@@ -24,7 +24,7 @@ SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
 # shellcheck disable=SC1091
 [[ -f "$SCRIPT_DIR/config/install.defaults.env" ]] && source "$SCRIPT_DIR/config/install.defaults.env"
 
-AGENT_MEMORY_INSTALL_REPO="${AGENT_MEMORY_INSTALL_REPO:-https://github.com/YOUR_ORG/agent-memory.git}"
+AGENT_MEMORY_INSTALL_REPO="${AGENT_MEMORY_INSTALL_REPO:-https://github.com/v3gaS/agent-memory.git}"
 AGENT_MEMORY_INSTALL_REF="${AGENT_MEMORY_INSTALL_REF:-main}"
 
 TARGET=""

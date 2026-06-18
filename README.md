@@ -39,8 +39,36 @@ From the **root of the project you want to bootstrap**:
 curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
 ```
 
-Interactive prompts ask for project name, stack, config path, and default test command.  
-The installer clones this repo temporarily, copies the scaffold, and verifies doc integrity.
+Interactive prompts ask for project name (stack is **auto-detected** from repo markers — `package.json`, `pyproject.toml`, `go.mod`, etc.). Press Enter to accept the detected stack, or type your own.
+
+### Stack auto-detection
+
+On install, agent-memory scans the target project for stack markers and fills:
+
+- `stack` summary in `agent_memory.state.yaml`
+- `AGENTS.md` **Shipped stack** line
+- default test command and config path (when not overridden)
+
+When you add a new stack later (e.g. start with Python, add a `package.json` frontend):
+
+```bash
+python3 scripts/stack_detect.py --sync
+```
+
+This **merges** new signals into `stack_signals` — it does not erase prior ones. Use `--replace` to rebuild from scratch.
+
+Manual additions without marker files:
+
+```yaml
+# agent_memory.state.yaml
+stack_manual_append:
+  - PostgreSQL
+  - Redis
+```
+
+Then run `python3 scripts/stack_detect.py --sync` to rebuild the summary line.
+
+Skip detection: `install.sh --no-detect-stack` or `apply.py --no-detect-stack`.
 
 ### Non-interactive (presets)
 

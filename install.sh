@@ -4,7 +4,7 @@
 # Local (from cloned template repo):
 #   ./install.sh --target /path/to/project
 #
-# Remote one-liner (after publishing standalone repo — set v3gaS):
+# Remote one-liner:
 #   curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
 #
 # Non-interactive:
@@ -35,6 +35,7 @@ NO_VERIFY=""
 NO_PROMPT=""
 YES=""
 CLONE_TMP=""
+NO_DETECT=""
 PRESET=""
 
 PROJECT_NAME=""
@@ -64,6 +65,7 @@ Options:
   --primary-config PATH  e.g. config/settings.yaml or .env
   --src-root PATH        e.g. src/ or apps/api/
   --test-command CMD     e.g. pytest -q, npm test, go test ./...
+  --no-detect-stack      Skip automatic stack detection
   -h, --help
 
 Examples:
@@ -135,6 +137,7 @@ parse_args() {
       --primary-config) PRIMARY_CONFIG="$2"; shift 2 ;;
       --src-root) SRC_ROOT="$2"; shift 2 ;;
       --test-command) TEST_COMMAND="$2"; shift 2 ;;
+      --no-detect-stack) NO_DETECT=1; shift ;;
       -h|--help) usage; exit 0 ;;
       *) die "unknown argument: $1 (try --help)" ;;
     esac
@@ -187,8 +190,7 @@ run_apply() {
   [[ -n "$PRIMARY_CONFIG" ]] && cmd+=(--primary-config "$PRIMARY_CONFIG")
   [[ -n "$SRC_ROOT" ]] && cmd+=(--src-root "$SRC_ROOT")
   [[ -n "$TEST_COMMAND" ]] && cmd+=(--test-command "$TEST_COMMAND")
-
-  log "running apply.py → $TARGET"
+  [[ -n "$NO_DETECT" ]] && cmd+=(--no-detect-stack)
   "${cmd[@]}"
 }
 

@@ -28,6 +28,11 @@ case "$cmd" in
     python3 scripts/docs_integrity.py
     python3 -m pytest tests/test_docs_integrity.py -q "$@"
     ;;
+  sync-stack)
+    target="${1:-.}"
+    shift || true
+    exec python3 "$ROOT/stack_detect.py" --root "$target" --sync "$@"
+    ;;
   version)
     cat "$ROOT/VERSION"
     ;;
@@ -40,6 +45,7 @@ Usage:
   agent-memory apply --target PATH [apply.py options]
   agent-memory register --slug NAME --title TITLE --paths GLOB [--test CMD]
   agent-memory verify [TARGET_DIR]
+  agent-memory sync-stack [TARGET_DIR]   # re-detect and merge stack signals
   agent-memory version
 
 Install script:

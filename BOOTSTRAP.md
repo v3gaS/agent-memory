@@ -17,7 +17,7 @@ Use this guide when adding the scaffold to a **new repo** or **existing codebase
 From the **target project root** (or any path):
 
 ```bash
-# Remote (after publishing standalone repo — replace v3gaS)
+# Remote
 curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
 
 # Local (from cloned template repo)
@@ -63,6 +63,23 @@ If you cannot run Python on the target machine:
    - `{{DEFAULT_TEST_COMMAND}}`
    - `{{DATE}}` (YYYY-MM-DD)
 3. Copy `apply.py` helpers into `scripts/` if desired (`register_subsystem.py`).
+
+---
+
+## Stack profile (auto-detect + sync)
+
+**On install:** stack is detected from repo markers unless you pass `--stack` or `--no-detect-stack`.
+
+**As the project grows:** re-run sync to append new stack pieces:
+
+```bash
+python3 scripts/stack_detect.py --sync
+# or from cloned template repo:
+./bin/agent-memory sync-stack /path/to/your-project
+```
+
+Reads: `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, monorepo configs, etc.  
+Updates: `agent_memory.state.yaml`, `AGENTS.md`, `docs/ARCHITECTURE.md`.
 
 ---
 

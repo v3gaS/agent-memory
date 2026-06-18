@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
-import json
 import shutil
 import sys
 from pathlib import Path
@@ -20,6 +19,8 @@ try:
     import yaml
 except ImportError:
     yaml = None  # type: ignore
+
+from stack_detect import apply_detection_to_config, detect_stack, write_initial_signals
 
 
 SCAFFOLD_ROOT = Path(__file__).resolve().parent
@@ -61,6 +62,8 @@ def _merge_config(config_path: Path | None, args: argparse.Namespace) -> dict:
         cfg["src_root"] = args.src_root
     if args.test_command:
         cfg["default_test_command"] = args.test_command
+    if getattr(args, "no_detect_stack", False):
+        cfg["_no_detect_stack"] = True
     if not cfg.get("date"):
         cfg["date"] = dt.date.today().isoformat()
     cfg["force"] = args.force or cfg.get("force", False)
@@ -76,8 +79,15 @@ def _prompt(cfg: dict) -> dict:
         cfg[key] = val or default
 
     defaults = _load_yaml(DEFAULTS_PATH) if DEFAULTS_PATH.is_file() else {}
+    detected_default = ""
+    if cfg.get("_detect_preview"):
+        detected_default = cfg["_detect_preview"]
     ask("project_name", "Project name", cfg.get("project_name") or defaults.get("project_name", "My Project"))
-    ask("stack_summary", "Stack summary (one line)", cfg.get("stack_summary") or defaults.get("stack_summary", ""))
+    ask(
+        "stack_summary",
+        "Stack summary (one line, Enter=detected)",
+        cfg.get("stack_summary") or detected_default or defaults.get("stack_summary", ""),
+    )
     ask("primary_config", "Primary config path", cfg.get("primary_config") or defaults.get("primary_config", "config/settings.yaml"))
     ask("src_root", "Source root", cfg.get("src_root") or defaults.get("src_root", "src/"))
     ask("test_command", "Default test command", cfg.get("default_test_command") or defaults.get("default_test_command", "pytest -q"))
@@ -137,7 +147,7 @@ def apply(target: Path, cfg: dict) -> list[str]:
         actions.append(f"WRITE: {dest_rel}")
 
     # Copy helper scripts to scripts/ if not from templates
-    for helper in ("register_subsystem.py",):
+    for helper in ("register_subsystem.py", "stack_detect.py"):
         src = SCAFFOLD_ROOT / helper
         if not src.is_file():
             continue
@@ -175,6 +185,13 @@ def main() -> int:
     parser.add_argument("--primary-config", dest="primary_config")
     parser.add_argument("--src-root", dest="src_root")
     parser.add_argument("--test-command", dest="test_command")
+    parser.add_argument(
+        "--detect-stack",
+        action="store_true",
+        default=None,
+        help="Auto-detect stack from repo markers (default when --no-prompt and no --stack)",
+    )
+    parser.add_argument("--no-detect-stack", dest="no_detect_stack", action="store_true")
     args = parser.parse_args()
 
     target = args.target.resolve()
@@ -183,10 +200,28 @@ def main() -> int:
         return 1
 
     cfg = _merge_config(args.config, args)
+
+    use_detect = not cfg.get("_no_detect_stack") and not args.stack
+    if args.no_detect_stack:
+        use_detect = False
+    if args.detect_stack:
+        use_detect = True
+
+    if use_detect:
+        preview = detect_stack(target)
+        cfg["_detect_preview"] = preview.summary
+        if not args.stack:
+            cfg = apply_detection_to_config(cfg, target)
+            if args.no_prompt or args.config:
+                print(f"Detected stack: {cfg.get('stack_summary')}")
+
     if not args.no_prompt and not args.config:
         cfg = _prompt(cfg)
 
     actions = apply(target, cfg)
+    if use_detect and cfg.get("_detected_stack_signals"):
+        write_initial_signals(target, cfg)
+        actions.append("UPDATE: agent_memory.state.yaml stack_signals")
     print(f"\nApplied agent-memory scaffold to {target}\n")
     for line in actions:
         print(f"  {line}")
@@ -197,6 +232,7 @@ def main() -> int:
     print("  3. python3 scripts/docs_integrity.py")
     print(f"  4. python3 -m pytest tests/test_docs_integrity.py -q")
     print(f"  5. {cfg.get('default_test_command', 'pytest -q')}")
+    print("  6. After adding new stack pieces: python3 scripts/stack_detect.py --sync")
     print("\nSee BOOTSTRAP.md for full checklist.")
     return 0
 

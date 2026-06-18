@@ -1,10 +1,15 @@
 # Agent memory — machine-readable project profile
-# Updated by apply.py and register_subsystem.py; edit by hand when stack or maturity changes.
-# See scaffold/agent-memory/GROWTH.md for level definitions.
+# Updated by apply.py, register_subsystem.py, and scripts/stack_detect.py --sync
+# See GROWTH.md for maturity level definitions.
 
 maturity_level: "{{MATURITY_LEVEL}}"
 project_name: "{{PROJECT_NAME}}"
 stack: "{{STACK_SUMMARY}}"
+stack_signals: []
+stack_manual_append: []
+stack_last_sync: "{{DATE}}"
+stack_profile:
+  auto_detect: true
 primary_config: "{{PRIMARY_CONFIG}}"
 src_roots:
   - "{{SRC_ROOT}}"

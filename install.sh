@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Agent Memory — install into an existing or new project directory.
-#
+# Version: see VERSION in repo root
 # Local (from cloned template repo):
 #   ./install.sh --target /path/to/project
 #
-# Remote one-liner (after publishing standalone repo — set v3gaS):
-#   curl -fsSL https://raw.githubusercontent.com/v3gaS/agent-memory/main/install.sh | bash -s -- --target .
+# Remote one-liner (after publishing standalone repo — set YOUR_ORG):
+#   curl -fsSL https://raw.githubusercontent.com/YOUR_ORG/agent-memory/main/install.sh | bash -s -- --target .
 #
 # Non-interactive:
 #   ./install.sh --target . --yes --project-name "My App" --stack "Next.js" \
@@ -24,7 +24,7 @@ SCRIPT_DIR="$(cd "$(dirname "$SCRIPT_PATH")" && pwd)"
 # shellcheck disable=SC1091
 [[ -f "$SCRIPT_DIR/config/install.defaults.env" ]] && source "$SCRIPT_DIR/config/install.defaults.env"
 
-AGENT_MEMORY_INSTALL_REPO="${AGENT_MEMORY_INSTALL_REPO:-https://github.com/v3gaS/agent-memory.git}"
+AGENT_MEMORY_INSTALL_REPO="${AGENT_MEMORY_INSTALL_REPO:-https://github.com/YOUR_ORG/agent-memory.git}"
 AGENT_MEMORY_INSTALL_REF="${AGENT_MEMORY_INSTALL_REF:-main}"
 
 TARGET=""
@@ -79,7 +79,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-log() { printf 'agent-memory: %s\n' "$*"; }
+log() { printf 'agent-memory: %s\n' "$*" >&2; }
 die() { log "ERROR: $*"; exit 1; }
 
 need_cmd() {
